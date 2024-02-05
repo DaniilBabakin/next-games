@@ -1,8 +1,4 @@
-import { GameCard, Games } from "@/components";
-
-type Props = {
-  data: Game[]
-}
+import { Games } from "@/components";
 
 async function getGamesData() {
   const res = await fetch('https://nextjs-test-pi-hazel-56.vercel.app/data/games.json')
@@ -11,7 +7,7 @@ async function getGamesData() {
   return data
 }
 
-export default async function Home(props: Props) {
+export default async function Home() {
   const data = await getGamesData() as Game[]
 
   return (
