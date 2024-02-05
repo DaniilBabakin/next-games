@@ -1,12 +1,13 @@
+import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 
-type Props = { 
+type UrlProps = { 
   params: { 
     slug: string 
   } 
 }
 
-export async function generateMetadata({ params: { slug } }: Props) {
+export async function generateMetadata({ params: { slug } }: UrlProps) {
   const [providerOrCategory, seo_title] = slug
   const newTitle = `${providerOrCategory}/${seo_title}`
 
@@ -15,7 +16,18 @@ export async function generateMetadata({ params: { slug } }: Props) {
   };
 }
 
-async function getGameData(slug: string) {
+export async function getStaticPaths() {
+  const res = await fetch('https://nextjs-test-pi-hazel-56.vercel.app/data/games.json');
+  const data = await res.json();
+
+  const paths = data.map((game: Game) => ({
+    params: { slug: [game.provider, game.seo_title] }
+  }));
+
+  return { paths, fallback: false };
+}
+
+async function getGameData(slug: string): Promise<Game> {
   const [providerOrCategory, seo_title] = slug
   const res = await fetch('https://nextjs-test-pi-hazel-56.vercel.app/data/games.json')
   const data = await res.json()
@@ -25,8 +37,9 @@ async function getGameData(slug: string) {
   return game;
 }
 
-const GamePage = async ({ params }: Props) => {
-  const game = await getGameData(params.slug) as Game
+const GamePage = async ({ params: { slug } }: UrlProps) => {
+  const game = await getGameData(slug)
+
   const { title, identifier, provider, categories } = game;
 
   return (
@@ -43,7 +56,7 @@ const GamePage = async ({ params }: Props) => {
       <ul className="flex gap-3 flex-wrap">
         {categories.map((category)=>(
           <li
-            className="uppercase border-2 border-red-400 rounded-lg p-2 hover:bg-red-400 transition-colors" 
+            className="uppercase border-2 border-red-400 rounded-lg p-2" 
             key={category}
           >
             {category}
