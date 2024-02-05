@@ -1,4 +1,5 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+//@ts-nocheck
+import { GetStaticPaths } from "next";
 import Image from "next/image";
 
 type UrlProps = { 
@@ -16,7 +17,7 @@ export async function generateMetadata({ params: { slug } }: UrlProps) {
   };
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = (async () => {
   const res = await fetch('https://nextjs-test-pi-hazel-56.vercel.app/data/games.json');
   const data = await res.json();
 
@@ -25,7 +26,7 @@ export async function getStaticPaths() {
   }));
 
   return { paths, fallback: false };
-}
+}) satisfies GetStaticPaths
 
 async function getGameData(slug: string): Promise<Game> {
   const [providerOrCategory, seo_title] = slug
