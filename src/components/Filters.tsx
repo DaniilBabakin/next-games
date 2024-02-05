@@ -8,7 +8,7 @@ type Props = {
 
 const Filters = (props: Props) => {
   const { categories, activeCategory, setCategory } = props;
-  console.log(categories.length)
+
   return (
     <div className="flex h-fit flex-wrap items-center justify-center gap-6 bg-slate-200 rounded-lg p-4">
       {categories.map((category)=>(
